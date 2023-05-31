@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import CommingSoon from '@/components/shared/coming-soon/ComingSoon.vue';
-import Navigation2 from '@/components/section/header/Header2.vue';
-import FormBannerInput from '@/components/section/form-banner/FormBannerInput.vue';
+import Menu from '@/components/section/snise/Menu.vue';
+import SobreSnise from '@/components/section/snise/SobreSnise.vue';
+import LinkSitioWeb from '@/components/section/snise/LinkSitioWeb.vue';
 </script>
 
 <template>
   <div>
-    <Navigation2 />
-    <FormBannerInput />
-    <CommingSoon/>
+    <Menu />
+    <SobreSnise />
+    <LinkSitioWeb />
   </div>
 </template>

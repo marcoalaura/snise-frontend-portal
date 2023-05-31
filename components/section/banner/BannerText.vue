@@ -1,18 +1,35 @@
 <template>
   <div>
-    <div class="mini-spacer bg-extra-light">
-      <img :src="bannerPrincipal" alt="logo"/>
+    <div class="mini-spacer">
+      <v-container>
+        <!-- -----------------------------------------------
+            Start Banner Text
+        ----------------------------------------------- -->
+        <v-row justify="center">
+          <v-col cols="12" sm="10" md="9" lg="7">
+            <div class="text-center">
+              <h2 class="ui-title font-weight-bold">Banners</h2>
+              <p class="text-muted">
+                Here you can check Demos we created you can easily use it. Its
+                quite easy to Create your own dream website & dashboard in
+                No-time.
+              </p>
+            </div>
+          </v-col>
+        </v-row>
+
+        <!-- -----------------------------------------------
+            End Banner Text
+        ----------------------------------------------- -->
+      </v-container>
     </div>
   </div>
 </template>
 <script>
-import BannerPrincipal from '/images/banner/banner-1-obscd.png';
 export default {
   name: "BannerText",
   data() {
-    return {
-      bannerPrincipal: BannerPrincipal,
-    };
+    return {};
   },
   methods: {},
 };

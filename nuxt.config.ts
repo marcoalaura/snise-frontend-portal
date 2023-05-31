@@ -22,6 +22,11 @@ export default defineNuxtConfig({
     devServerHandlers: [],
     hooks: {
     },
+    runtimeConfig: {
+      public: {
+        apiBase: process.env.VUE_APP_URL_BACKEND || "http://localhost:3000/api/",
+      }
+    },
   
   })
 
