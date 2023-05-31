@@ -41,18 +41,18 @@
             </v-tabs>
             <v-window v-model="tab" style="min-height: 500px;">
               <v-window-item value="option-1">
-                <Line :data="graficoLinea" :options="options" />
-                <!-- <v-row>
+                <v-row>
                   <v-col v-if="graficoLinea?.habilitado" cols="12" :md="graficoLinea?.ancho">
                     <Line :data="graficoLinea" :options="options" />
                   </v-col>
+                <!--
                   <v-col v-if="graficoBarra?.habilitado" cols="12" :md="graficoBarra?.ancho">
                     <Bar :data="graficoBarra" :options="options" />
                   </v-col>
                   <v-col v-if="graficoPie?.habilitado" cols="12" :md="graficoPie?.ancho">
                     <Pie :data="graficoPie" :options="options" />
-                  </v-col>
-                </v-row> -->
+                  </v-col> -->
+                </v-row>
               </v-window-item>
               <v-window-item value="option-2">
                 <v-card flat>
@@ -100,34 +100,35 @@
   </div>
 </template>
 <script>
-// import { Line, Bar, Pie } from "vue-chartjs";
-// import {
-//   Chart as ChartJS,
-//   ArcElement,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from "chart.js";
+import { Line, Bar, Pie } from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-// ChartJS.register(
-//   ArcElement,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default {
   name: "Modulo",
+  components: { Line },
   data() {
     return {
       tab: 'option-1',
@@ -180,6 +181,18 @@ export default {
 
       this.idModulo = localStorage.getItem("fidmodulo");
       this.modulo = localStorage.getItem("fmodulo");
+
+      this.graficoLinea = {
+        habilitado: true,
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [40, 39, 10, 40, 39, 80, 40]
+          }
+        ]
+      };
 
       // let rta = await this.axios.get("/repositorio/graficos/" + idModulo);
       // console.log('========================> rta', rta);
