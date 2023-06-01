@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import BannerPrincipal from '/images/banner/banner-1-obscd.png';
+import BannerPrincipal from '/images/banner/banner-1-obscd.jpg';
 export default {
   name: "Banner",
   data() {
