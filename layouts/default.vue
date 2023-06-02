@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const title = ref("Next-kit - Nuxt3 Typescript Free UI kit built with Vuetify3");
+const title = ref("SNISE");
 useHead({
   meta: [{ content: title }],
   titleTemplate: (titleChunk) => {
     return titleChunk
-      ? `${titleChunk} - Nuxt3 Typescript Free UI kit built with Vuetify3`
-      : "Next-kit - Nuxt3 Typescript Free UI kit built with Vuetify3";
+      ? `${titleChunk} - OBSCD`
+      : "SNISE";
   },
 });
 </script>

@@ -96,9 +96,7 @@
                 <v-row>
                   <v-card width="100%">
                     <v-card-title>
-                      <v-spacer />
                       <h4 class="text-center"> Documentos de investigacion </h4>
-                      <v-spacer />
                     </v-card-title>
                   </v-card>
                 </v-row>
@@ -125,6 +123,33 @@
                         <span>Descargar</span>
                       </v-btn>
                     </v-card-actions>
+                  </v-card>
+                </v-row>
+              </v-window-item>
+              <v-window-item value="option-4">
+                <v-row>
+                  <v-card width="100%">
+                    <v-card-title>
+                      <h4 class="text-center"> Seleccione la información que desea descargar </h4>
+                    </v-card-title>
+                  </v-card>
+                </v-row>
+                <br><br>
+                <v-row justify="center">
+                  <v-card 
+                    width="80%" 
+                    v-for="(descarga, id) in descargas"
+                    v-bind:key="id"
+                    flat
+                  ><v-btn
+                      class="ma-2"
+                      color="green"
+                      icon="mdi-file-excel"
+                      @click="downloadDescarga(descarga)"
+                      outlined
+                      tile
+                    ></v-btn>
+                      {{ descarga.titulo }}
                   </v-card>
                 </v-row>
               </v-window-item>
@@ -175,6 +200,7 @@ export default {
       modulo: null,
       modulos: [],
       documentos: [],
+      descargas: [],
       dialogLoading: false,
       graficoLinea: null,
       graficoBarra: null,
@@ -203,10 +229,10 @@ export default {
       return false;
     },
     documentoHabilitado() {
-      return true;
+      return this.documentos.length > 0;
     },
     descargaHabilitado() {
-      return true;
+      return this.descargas.length > 0;
     },
   },
   created() {
@@ -260,6 +286,13 @@ export default {
             this.documentos = rta.data?._rawValue;
           }
         } catch (error) { }
+
+        try {
+          let rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/descargas/${this.idModulo}`);
+          if (rta.data?._rawValue) {
+            this.descargas = rta.data?._rawValue;
+          }
+        } catch (error) { }
       }
     },
     retornar() {
@@ -272,7 +305,7 @@ export default {
       this.dialogLoading = true;
       
       try {
-        await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo/documento/${item.id}`)
+        await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-documento/${item.id}`)
           .then((response) => response.blob())
           .then((responseBlob) => {
           let fileURL = window.URL.createObjectURL(new Blob([responseBlob]));
@@ -286,6 +319,27 @@ export default {
         this.dialogLoading = false;
       } catch (error) {
         console.log('========================> error', error);
+        this.dialogLoading = false;
+        this.snackbar = true;
+        this.textSnackbar = "Ocurrió un error, intente nuevamente.";
+        this.colorSnackbar = "red";
+      }
+    },
+    async downloadDescarga(item) {
+      this.dialogLoading = true;
+      try {
+        await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-descarga/${item.id}`)
+          .then((response) => response.blob())
+          .then((responseBlob) => {
+          let fileURL = window.URL.createObjectURL(new Blob([responseBlob]));
+          let fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", "SUIN-descarga.xlsx");
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        });
+        this.dialogLoading = false;
+      } catch (error) {
         this.dialogLoading = false;
         this.snackbar = true;
         this.textSnackbar = "Ocurrió un error, intente nuevamente.";
