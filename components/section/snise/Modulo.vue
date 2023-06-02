@@ -94,19 +94,34 @@
               </v-window-item>
               <v-window-item value="option-3">
                 <v-row>
+                  <v-card width="100%">
+                    <v-card-title>
+                      <v-spacer />
+                      <h4 class="text-center"> Documentos de investigacion </h4>
+                      <v-spacer />
+                    </v-card-title>
+                  </v-card>
+                </v-row>
+                <v-row>
                   <v-card 
                     v-for="(documento, id) in documentos"
                     v-bind:key="id"
-                    width="250px"
-                    class="pa-4"
+                    color="light-green"
+                    width="200px"
+                    class="ma-4"
                   >
+                    <v-img
+                      src="/images/banner/banner-superior.png"
+                      height="15px" width="100%"
+                    >
+                    </v-img>
                     <v-card-text>{{ documento.titulo }}</v-card-text>
                     <v-card-actions class="justify-center">
                       <v-btn            
                         @click="downloadDocumento(documento)"
                         class="indigo accent-4 white--text"
                       >
-                        <v-icon color="red">mdi-file-pdf</v-icon>
+                        <v-icon>mdi-file</v-icon>
                         <span>Descargar</span>
                       </v-btn>
                     </v-card-actions>
@@ -255,13 +270,12 @@ export default {
     },
     async downloadDocumento(item) {
       this.dialogLoading = true;
+      
       try {
-        await this.axios({
-          method: "get",
-          url: "/archivo/documento/" + item.id,
-          responseType: "blob",
-        }).then(function (response) {
-          let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo/documento/${item.id}`)
+          .then((response) => response.blob())
+          .then((responseBlob) => {
+          let fileURL = window.URL.createObjectURL(new Blob([responseBlob]));
           let fileLink = document.createElement("a");
           const fileExtension = item.file_url.split(".").pop();
           fileLink.href = fileURL;
@@ -271,6 +285,7 @@ export default {
         });
         this.dialogLoading = false;
       } catch (error) {
+        console.log('========================> error', error);
         this.dialogLoading = false;
         this.snackbar = true;
         this.textSnackbar = "Ocurrió un error, intente nuevamente.";
