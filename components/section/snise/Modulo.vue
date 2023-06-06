@@ -87,10 +87,13 @@
                 </v-row>
               </v-window-item>
               <v-window-item value="option-2">
-                <v-card flat>
-                  <v-card-text>
-                  </v-card-text>
-                </v-card>
+                <v-row>
+                  <v-col v-if="graficoMapa?.habilitado" cols="12" :md="graficoMapa?.ancho">
+                    <v-card height="500" class="leaflet-container">
+                      <div id="map" ref="mapElement"></div>
+                    </v-card>
+                  </v-col>
+                </v-row>
               </v-window-item>
               <v-window-item value="option-3">
                 <v-row>
@@ -161,6 +164,13 @@
   </div>
 </template>
 <script>
+import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet";
+import "heatmapjs/heatmap";
+import "leaflet-heatmap";
+import * as HeatmapOverlay from "leaflet-heatmap";
+// var HeatmapOverlay = require("leaflet-heatmap");
+
 import constants from '@/common/mixins/constants';
 import { Line, Bar, Pie } from "vue-chartjs";
 import {
@@ -201,10 +211,14 @@ export default {
       modulos: [],
       documentos: [],
       descargas: [],
+      coordenadas: [],
+      showCoordenadas: false,
+      chartDataCoordenadas: [],
       dialogLoading: false,
       graficoLinea: null,
       graficoBarra: null,
       graficoPie: null,
+      graficoMapa: null,
       titulo: null,
       notaPie: null,
       options: {
@@ -226,7 +240,7 @@ export default {
       return this.graficoLinea?.habilitado || this.graficoBarra?.habilitado || this.graficoPie?.habilitado;
     },
     mapaHabilitado() {
-      return false;
+      return this.graficoMapa?.habilitado;
     },
     documentoHabilitado() {
       return this.documentos.length > 0;
@@ -237,6 +251,8 @@ export default {
   },
   created() {
     this.obtenerModulos();
+  },
+  mounted() {
     this.initialize();
   },
   methods: {
@@ -279,6 +295,69 @@ export default {
             this.graficoPie = rta.data?._rawValue?.pie;
           }
         } catch (error) { };
+
+        // Grafica del mapa
+        try {
+          this.graficoMapa = null;
+          this.titulo = null;
+          this.notaPie = null;
+
+          const rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/mapas/${this.idModulo}`);
+
+          this.titulo = rta.data?._rawValue.titulo;
+          this.notaPie = rta.data?._rawValue.nota;
+
+          // grafico de mapa
+          this.graficoMapa = rta.data?._rawValue.mapa;
+          console.log('========================> this.graficoMapa', this.graficoMapa);
+        
+          if (this.graficoMapa?.habilitado) {
+            this.$nextTick(() => {
+              this.showCoordenadas = true;
+              this.chartDataCoordenadas = [];
+    
+              this.coordenadas = this.graficoMapa.datosCoordenadas;
+              
+              
+              this.chartDataCoordenadas = {
+                max: 1000,
+                data: this.coordenadas,
+              };
+    
+              var baseLayer = L.tileLayer(
+                "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                  attribution:
+                    'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                  maxZoom: 12,
+                }
+              );
+    
+              var cfg = {
+                radius: 15,
+                maxOpacity: 0.5,
+                scaleRadius: false,
+                useLocalExtrema: true,
+                latField: "latitud",
+                lngField: "longitud",
+                valueField: "value",
+              };
+    
+              var heatmapLayer = new HeatmapOverlay(cfg);
+              console.log('========================> heatmapLayer', heatmapLayer);
+              var map = new L.Map(this.$refs["mapElement"], {
+                center: new L.LatLng(-16.2835167, -63.5493712), //ubicacion bolivia
+                zoom: 6,
+                layers: [baseLayer, heatmapLayer],
+              });
+    
+              heatmapLayer.setData(this.chartDataCoordenadas);
+            });
+          }
+            
+        } catch (e) {
+          console.log('========================> e', e);
+        }
 
         try {
           let rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/documentos/${this.idModulo}`);
@@ -349,3 +428,12 @@ export default {
   },
 };
 </script>
+<style lang="css">
+#map {
+  height: 100%;
+}
+.leaflet-container {
+  background: rgb(255, 255, 255) !important;
+  box-shadow: none;
+}
+</style>
