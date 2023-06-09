@@ -167,9 +167,7 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/leaflet";
 import "heatmapjs/heatmap";
-import "leaflet-heatmap";
-import * as HeatmapOverlay from "leaflet-heatmap";
-// var HeatmapOverlay = require("leaflet-heatmap");
+import HeatmapOverlay from "leaflet-heatmap";
 
 import constants from '@/common/mixins/constants';
 import { Line, Bar, Pie } from "vue-chartjs";
@@ -318,7 +316,6 @@ export default {
     
               this.coordenadas = this.graficoMapa.datosCoordenadas;
               
-              
               this.chartDataCoordenadas = {
                 max: 1000,
                 data: this.coordenadas,
@@ -344,7 +341,6 @@ export default {
               };
     
               var heatmapLayer = new HeatmapOverlay(cfg);
-              console.log('========================> heatmapLayer', heatmapLayer);
               var map = new L.Map(this.$refs["mapElement"], {
                 center: new L.LatLng(-16.2835167, -63.5493712), //ubicacion bolivia
                 zoom: 6,
