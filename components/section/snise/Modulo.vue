@@ -162,6 +162,22 @@
       </v-container>
     </div>
   </div>
+  <v-container>
+    <div>
+      <v-snackbar v-model="snackbar">
+        {{ textSnackbar }}
+        <template v-slot:actions>
+          <v-btn
+            :color="colorSnackbar"
+            variant="text"
+            @click="snackbar = false"
+          >
+            Cerrar
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
+  </v-container>
 </template>
 <script>
 import "leaflet/dist/leaflet.css";
@@ -212,7 +228,6 @@ export default {
       coordenadas: [],
       showCoordenadas: false,
       chartDataCoordenadas: [],
-      dialogLoading: false,
       graficoLinea: null,
       graficoBarra: null,
       graficoPie: null,
@@ -226,6 +241,9 @@ export default {
         // pointBackgroundColor: "#2196F3",
         // backgroundColor: "#2196F3",
       },
+      snackbar: false,
+      textSnackbar: "",
+      colorSnackbar: "",
       constants,
       runtimeConfig: runtimeConfig,
     };
@@ -377,8 +395,6 @@ export default {
       this.modulo = '';
     },
     async downloadDocumento(item) {
-      this.dialogLoading = true;
-      
       try {
         await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-documento/${item.id}`)
           .then((response) => response.blob())
@@ -391,17 +407,14 @@ export default {
           document.body.appendChild(fileLink);
           fileLink.click();
         });
-        this.dialogLoading = false;
       } catch (error) {
         console.log('========================> error', error);
-        this.dialogLoading = false;
         this.snackbar = true;
         this.textSnackbar = "Ocurrió un error, intente nuevamente.";
         this.colorSnackbar = "red";
       }
     },
     async downloadDescarga(item) {
-      this.dialogLoading = true;
       try {
         await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-descarga/${item.id}`)
           .then((response) => response.blob())
@@ -413,9 +426,7 @@ export default {
           document.body.appendChild(fileLink);
           fileLink.click();
         });
-        this.dialogLoading = false;
       } catch (error) {
-        this.dialogLoading = false;
         this.snackbar = true;
         this.textSnackbar = "Ocurrió un error, intente nuevamente.";
         this.colorSnackbar = "red";
