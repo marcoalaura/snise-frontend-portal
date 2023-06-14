@@ -14,7 +14,8 @@
             <v-card elevation="0" class="team-card mb-7" @click="seleccionar(modulo)">
               <v-card-title>{{ modulo.nombre }}</v-card-title>
               <div class="social-overlay overflow-hidden">
-                <img :src="`/images/team/narcotrafico.jpg`" :alt="modulo.id" class="img-fluid"/>
+                <!-- <img :src="`/images/team/narcotrafico.jpg`" :alt="modulo.id" class="img-fluid"/> -->
+                <img :src="modulo.urlRemote" :alt="modulo.id" class="img-fluid" />
                 <div class="img-overlay">
                   <div>
                     <h5 class="team-title font-weight-medium font-18 mt-5">
@@ -53,6 +54,10 @@ export default {
 
         if (rta.data?._rawValue) {
           this.modulos = rta.data?._rawValue;
+
+          this.modulos.forEach(async (mod) => {
+            mod.urlRemote = await this.getImage(mod.url);
+          });
         }
       } catch (error) { }
     },
@@ -60,7 +65,34 @@ export default {
       localStorage.setItem("fidmodulo", modulo.id);
       localStorage.setItem("fmodulo", modulo.nombre);
       this.$router.push({ name: "modulos" });
-    }
+    },
+    async getImage(url) {
+      try {
+        const settings = {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
+        };
+        const result = await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-image`, settings)
+          .then((response) => {
+          return response.arrayBuffer();
+        });
+        if (result) {
+          const b64 = btoa(String.fromCharCode(...new Uint8Array(result)));
+          const imgData = "data:image/jpeg;base64," + b64;
+          return imgData;
+        }
+        return null;
+      } catch (error) {
+        console.log('========================> error', error);
+        this.snackbar = true;
+        this.textSnackbar = "Ocurrió un error, intente nuevamente.";
+        this.colorSnackbar = "red";
+      }
+    },
   },
 };
 </script>
