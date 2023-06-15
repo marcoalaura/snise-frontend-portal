@@ -182,8 +182,7 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import "leaflet/dist/leaflet";
-import "heatmapjs/heatmap";
-import HeatmapOverlay from "leaflet-heatmap";
+import { deptosData } from "@/data/bo-deptos.js";
 
 import constants from '@/common/mixins/constants';
 import { Line, Bar, Pie } from "vue-chartjs";
@@ -214,6 +213,53 @@ ChartJS.register(
 
 const runtimeConfig = useRuntimeConfig();
 
+const info = L.control();
+// get color related in 100 percent
+function getColor(d) {
+  return d > 100 ? '#800026' :
+    d > 50  ? '#BD0026' :
+    d > 20  ? '#E31A1C' :
+    d > 10  ? '#FC4E2A' :
+    d > 5   ? '#FD8D3C' :
+    d > 2   ? '#FEB24C' :
+    d > 1   ? '#FED976' : '#FFEDA0';
+}
+
+function style(feature) {
+  return {
+    weight: 2,
+    opacity: 1,
+    color: 'white',
+    dashArray: '3',
+    fillOpacity: 0.7,
+    fillColor: getColor(feature.properties.value),
+  };
+}
+
+function highlightFeature(e) {
+  const layer = e.target;
+
+  layer.bringToFront();
+
+  info.update(layer.feature.properties);
+}
+
+function resetHighlight(e) {
+  info.update();
+}
+
+function zoomToFeature(e) {
+  map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: zoomToFeature
+  });
+}
+
 export default {
   name: "Modulo",
   components: { Line, Bar, Pie },
@@ -225,9 +271,6 @@ export default {
       modulos: [],
       documentos: [],
       descargas: [],
-      coordenadas: [],
-      showCoordenadas: false,
-      chartDataCoordenadas: [],
       graficoLinea: null,
       graficoBarra: null,
       graficoPie: null,
@@ -245,6 +288,8 @@ export default {
       textSnackbar: "",
       colorSnackbar: "",
       constants,
+      deptosData,
+      info,
       runtimeConfig: runtimeConfig,
     };
   },
@@ -329,16 +374,7 @@ export default {
         
           if (this.graficoMapa?.habilitado) {
             this.$nextTick(() => {
-              this.showCoordenadas = true;
-              this.chartDataCoordenadas = [];
-    
-              this.coordenadas = this.graficoMapa.datosCoordenadas;
-              
-              this.chartDataCoordenadas = {
-                max: 1000,
-                data: this.coordenadas,
-              };
-    
+           
               var baseLayer = L.tileLayer(
                 "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
@@ -348,24 +384,37 @@ export default {
                 }
               );
     
-              var cfg = {
-                radius: 15,
-                maxOpacity: 0.5,
-                scaleRadius: false,
-                useLocalExtrema: true,
-                latField: "latitud",
-                lngField: "longitud",
-                valueField: "value",
-              };
-    
-              var heatmapLayer = new HeatmapOverlay(cfg);
               var map = new L.Map(this.$refs["mapElement"], {
                 center: new L.LatLng(-16.2835167, -63.5493712), //ubicacion bolivia
                 zoom: 6,
-                layers: [baseLayer, heatmapLayer],
+                layers: [baseLayer],
               });
-    
-              heatmapLayer.setData(this.chartDataCoordenadas);
+
+              // Información de la selección
+              info.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+              };
+
+              info.update = function (props) {
+                const contents = props ? `<b>${props.NOM_DEP}</b><br />${ props.DESCRIP }` : 'Seleccione un departamento';
+                this._div.innerHTML = `${contents}`;
+              };
+
+              info.addTo(map);
+
+              deptosData.features.forEach((d) => {
+                const dep = this.graficoMapa?.datos.find(m => m[2] === d.properties.COD_DEP);
+                d.properties.DESCRIP = dep ? dep[1] : '';
+                d.properties.value = dep ? dep[3] : '';
+              });
+
+              L.geoJson(deptosData, {
+                style,
+                onEachFeature
+              }).addTo(map);
+
             });
           }
             
@@ -442,5 +491,12 @@ export default {
 .leaflet-container {
   background: rgb(255, 255, 255) !important;
   box-shadow: none;
+}
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
 }
 </style>
