@@ -88,11 +88,29 @@
               </v-window-item>
               <v-window-item value="option-2">
                 <v-row>
+                  <v-card width="100%" v-if="graficoMapa?.habilitado">
+                    <v-card-title>
+                      <v-spacer />
+                      <h3 class="text-center"> {{ titulo }} </h3>
+                      <v-spacer />
+                    </v-card-title>
+                  </v-card>
+                </v-row>
+                <v-row>
                   <v-col v-if="graficoMapa?.habilitado" cols="12" :md="graficoMapa?.ancho">
                     <v-card height="500" class="leaflet-container">
                       <div id="map" ref="mapElement"></div>
                     </v-card>
                   </v-col>
+                </v-row>
+                <v-row>
+                  <v-card width="100%" v-if="graficoMapa?.habilitado">
+                    <v-card-title>
+                      <v-spacer />
+                      <v-label class="text-justify"> <pre>{{ notaPie ? notaPie: '' }}</pre> </v-label>
+                      <v-spacer />
+                    </v-card-title>
+                  </v-card>
                 </v-row>
               </v-window-item>
               <v-window-item value="option-3">
@@ -365,57 +383,59 @@ export default {
 
           const rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/mapas/${this.idModulo}`);
 
-          this.titulo = rta.data?._rawValue.titulo;
-          this.notaPie = rta.data?._rawValue.nota;
+          if (rta.data?._rawValue) {
+            this.titulo = rta.data?._rawValue.titulo;
+            this.notaPie = rta.data?._rawValue.nota;
 
-          // grafico de mapa
-          this.graficoMapa = rta.data?._rawValue.mapa;
-          console.log('========================> this.graficoMapa', this.graficoMapa);
-        
-          if (this.graficoMapa?.habilitado) {
-            this.$nextTick(() => {
-           
-              var baseLayer = L.tileLayer(
-                "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-                  attribution:
-                    'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-                  maxZoom: 12,
-                }
-              );
-    
-              var map = new L.Map(this.$refs["mapElement"], {
-                center: new L.LatLng(-16.2835167, -63.5493712), //ubicacion bolivia
-                zoom: 6,
-                layers: [baseLayer],
+            // grafico de mapa
+            this.graficoMapa = rta.data?._rawValue.mapa;
+            console.log('========================> this.graficoMapa', this.graficoMapa);
+          
+            if (this.graficoMapa?.habilitado) {
+              this.$nextTick(() => {
+            
+                var baseLayer = L.tileLayer(
+                  "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  {
+                    attribution:
+                      'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                    maxZoom: 12,
+                  }
+                );
+      
+                var map = new L.Map(this.$refs["mapElement"], {
+                  center: new L.LatLng(-16.2835167, -63.5493712), //ubicacion bolivia
+                  zoom: 6,
+                  layers: [baseLayer],
+                });
+
+                // Información de la selección
+                info.onAdd = function (map) {
+                  this._div = L.DomUtil.create('div', 'info');
+                  this.update();
+                  return this._div;
+                };
+
+                info.update = function (props) {
+                  const contents = props ? `<b>${props.NOM_DEP}</b><br />${ props.DESCRIP }` : 'Seleccione un departamento';
+                  this._div.innerHTML = `${contents}`;
+                };
+
+                info.addTo(map);
+
+                deptosData.features.forEach((d) => {
+                  const dep = this.graficoMapa?.datos.find(m => m[2] === d.properties.COD_DEP);
+                  d.properties.DESCRIP = dep ? dep[1] : '';
+                  d.properties.value = dep ? dep[3] : '';
+                });
+
+                L.geoJson(deptosData, {
+                  style,
+                  onEachFeature
+                }).addTo(map);
+
               });
-
-              // Información de la selección
-              info.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 'info');
-                this.update();
-                return this._div;
-              };
-
-              info.update = function (props) {
-                const contents = props ? `<b>${props.NOM_DEP}</b><br />${ props.DESCRIP }` : 'Seleccione un departamento';
-                this._div.innerHTML = `${contents}`;
-              };
-
-              info.addTo(map);
-
-              deptosData.features.forEach((d) => {
-                const dep = this.graficoMapa?.datos.find(m => m[2] === d.properties.COD_DEP);
-                d.properties.DESCRIP = dep ? dep[1] : '';
-                d.properties.value = dep ? dep[3] : '';
-              });
-
-              L.geoJson(deptosData, {
-                style,
-                onEachFeature
-              }).addTo(map);
-
-            });
+            }
           }
             
         } catch (e) {
