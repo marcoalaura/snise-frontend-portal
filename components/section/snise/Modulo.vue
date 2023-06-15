@@ -389,7 +389,6 @@ export default {
 
             // grafico de mapa
             this.graficoMapa = rta.data?._rawValue.mapa;
-            console.log('========================> this.graficoMapa', this.graficoMapa);
           
             if (this.graficoMapa?.habilitado) {
               this.$nextTick(() => {
