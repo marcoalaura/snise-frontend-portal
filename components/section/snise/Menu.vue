@@ -6,10 +6,10 @@
         <!-- Logo -->
         <div class="logo" style="margin-right: 20%">
           <v-btn
-                  class="btn px-6 bg-white ml-2 d-md-flex d-none"
-                  flat
-                >
-            <LcLogoWhiteTextLogo/>
+              class="btn px-6 bg-white ml-2 d-md-flex d-none"
+              flat
+            >
+            <img :src="urlLogoMinisterio" alt="Logo Ministerio" />
           </v-btn>
         </div>
         <!-- Desktop view Navigation -->
@@ -40,7 +40,7 @@
             class="btn px-6 bg-white ml-2 d-md-flex d-none"
             flat
           >
-          <img :src="WhiteTLogo" alt="logo"/>
+          <img :src="urlLogoObservatorio" alt="Logo Observaorio"/>
           </v-btn>
           <v-app-bar-nav-icon
             width="30"
@@ -71,7 +71,11 @@
 </template>
 <script>
 import { ref } from "vue";
-import WhiteTLogo from '/images/logos/LogoObservatorio.png';
+// import logoMinisterio from '/images/logos/LogoMinisterio.png';
+// import logoObservatorio from '/images/logos/LogoObservatorio.png';
+import constants from '@/common/mixins/constants';
+
+const runtimeConfig = useRuntimeConfig();
 const drawer = ref(null);
 export default {
   name: "Menu",
@@ -79,7 +83,12 @@ export default {
     return {
       isActive: false,
       drawer: drawer,
-      WhiteTLogo: WhiteTLogo,
+      logoMinisterio: null,
+      urlLogoMinisterio: null,
+      logoObservatorio: null,
+      urlLogoObservatorio: null,
+      constants,
+      runtimeConfig,
       headerMenu: [
         {
           title: "Inicio",
@@ -96,7 +105,61 @@ export default {
       ],
     };
   },
-  methods: {},
+  created() {
+    this.initialize();
+  },
+  methods: {
+    async initialize() {
+      try {
+        const rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/parametros/${this.constants.TIPOS_PARAMETROS[6]}`);
+
+        if (rta.data?._rawValue) {
+          this.logoMinisterio = rta.data?._rawValue[0];
+          this.urlLogoMinisterio = await this.getImage(this.logoMinisterio.url);
+        }
+      } catch (error) {
+        console.log('=======================> Error', error);
+      };
+
+      try {
+        const rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/parametros/${this.constants.TIPOS_PARAMETROS[7]}`);
+
+        if (rta.data?._rawValue) {
+          this.logoObservatorio = rta.data?._rawValue[0];
+          this.urlLogoObservatorio = await this.getImage(this.logoObservatorio.url);
+        }
+      } catch (error) {
+        console.log('=======================> Error', error);
+      };
+    },
+    async getImage(url) {
+      try {
+        const settings = {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
+        };
+        const result = await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-image`, settings)
+          .then((response) => {
+          return response.arrayBuffer();
+        });
+        if (result) {
+          const b64 = btoa(String.fromCharCode(...new Uint8Array(result)));
+          const imgData = "data:image/jpeg;base64," + b64;
+          return imgData;
+        }
+        return null;
+      } catch (error) {
+        console.log('========================> error', error);
+        this.snackbar = true;
+        this.textSnackbar = "Ocurrió un error, intente nuevamente.";
+        this.colorSnackbar = "red";
+      }
+    },
+  },
 };
 </script>
 
