@@ -1,5 +1,6 @@
 <template>
-  <v-footer class="footer px-4">
+  <div class="footer px-4" v-html="contacto?.descripcion"></div>
+  <!-- <v-footer class="footer px-4">
     <v-container>
       <h4 class="font-weight-regular font-18 text-center"><b>CONTACTO</b></h4>
       <v-row class="py-6 py-sm-7">
@@ -37,8 +38,37 @@
         </div>
       </div>
     </v-container>
-  </v-footer>
-  <!-- -----------------------------------------------
-        End Footer
-  ----------------------------------------------- -->
+  </v-footer> -->
 </template>
+<script>
+import constants from '@/common/mixins/constants';
+
+const runtimeConfig = useRuntimeConfig();
+
+export default {
+  name: "Footer",
+  data() {
+    return {
+      contacto: null,
+      constants,
+      runtimeConfig: runtimeConfig,
+    };
+  },
+  created() {
+    this.initialize();
+  },
+  methods: {
+    async initialize() {
+      try {
+        const rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/parametros/${this.constants.TIPOS_PARAMETROS[8]}`);
+
+        if (rta.data?._rawValue) {
+          this.contacto = rta.data?._rawValue[0];
+        }
+      } catch (error) {
+        console.log('=======================> Error', error);
+      };
+    },
+  },
+};
+</script>
