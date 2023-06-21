@@ -69,21 +69,19 @@
       </template>
     </v-text-field>
   </v-container>
-  <v-container>
-    <div>
-      <v-snackbar v-model="snackbar">
-        {{ textSnackbar }}
-        <template v-slot:actions>
-          <v-btn
-            :color="colorSnackbar"
-            variant="text"
-            @click="snackbar = false"
-          >
-            Cerrar
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </div>
+  <v-container v-if="snackbar">
+    <v-snackbar v-model="snackbar">
+      {{ textSnackbar }}
+      <template v-slot:actions>
+        <v-btn
+          :color="colorSnackbar"
+          variant="text"
+          @click="snackbar = false"
+        >
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
