@@ -10,7 +10,14 @@ export default defineNuxtConfig({
       },
     modules: [
       '@pinia/nuxt',
+      'nuxt-gtag',
     ],
+    gtag: {
+      id: 'G-XXXXXXXXXX',
+      config: {
+        page_title: 'My Custom Page Title'
+      }
+    },
     vite: {
       define: {
         "process.env.DEBUG": false,
