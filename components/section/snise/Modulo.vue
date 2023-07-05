@@ -2,6 +2,7 @@
   <div >
     <div class="formbanner1-component mini-spacer bg-extra-light">
       <v-container>
+        <h4 class="mb-5" v-if="!visible">Seleccione el módulo que desea revisar</h4>
         <v-select
           v-if="!visible"
           v-model="idModulo"
@@ -51,7 +52,7 @@
                 <v-icon start>
                   mdi-keyboard-return
                 </v-icon>
-                Retornar
+                Otros módulos
               </v-tab>
             </v-tabs>
             <v-window v-model="tab" class="overflow-y-auto" style="height: 600px; width: 100%;">

@@ -60,15 +60,25 @@
       </v-card>
     </v-dialog>
   </v-row>
-  <v-container>
-    <v-text-field v-model="searchVal" @keyup.enter="buscar">
-      <template v-slot:label>
-        <span>
-          Buscar datos o investigaciones <v-icon icon="mdi-file-find"></v-icon>
-        </span>
-      </template>
-    </v-text-field>
-  </v-container>
+  <v-row>
+    <v-col cols="3"></v-col>
+    <v-col cols="6">
+      <v-container class="mt-10">
+        <v-text-field 
+        v-model="searchVal" 
+        @keyup.enter="buscar"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined">
+          <template v-slot:label>
+            <span>
+              Buscar datos o investigaciones
+            </span>
+          </template>
+        </v-text-field>
+      </v-container>
+    </v-col>
+    <v-col cols="3"></v-col>
+</v-row>
   <v-container v-if="snackbar">
     <v-snackbar v-model="snackbar">
       {{ textSnackbar }}
