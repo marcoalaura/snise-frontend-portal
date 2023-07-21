@@ -55,7 +55,7 @@
                 Otros módulos
               </v-tab>
             </v-tabs>
-            <v-window v-model="tab" class="overflow-y-auto" style="height: 600px; width: 100%;">
+            <v-window v-model="tab" class="overflow-y-auto" style="height: 650px; width: 100%;">
               <v-window-item v-if="graficoHabilitado" value="option-1">
                 <v-row>
                   <v-card width="100%">
@@ -69,12 +69,12 @@
                 <v-row>
                   <v-col cols="12" :md="graficoLinea?.ancho">
                     <Line v-if="graficoLinea?.habilitado" :data="graficoLinea" :options="options" />
-                  </v-col>              
-                  <v-col v-if="graficoBarra?.habilitado" cols="12" :md="graficoBarra?.ancho">
-                    <Bar :data="graficoBarra" :options="options" />
-                  </v-col>
+                  </v-col>   
                   <v-col v-if="graficoPie?.habilitado" cols="12" :md="graficoPie?.ancho">
                     <Pie :data="graficoPie" :options="options" />
+                  </v-col>           
+                  <v-col v-if="graficoBarra?.habilitado" cols="12" :md="graficoBarra?.ancho">
+                    <Bar :data="graficoBarra" :options="options" />
                   </v-col>
                 </v-row>
                 <v-row>
@@ -141,7 +141,7 @@
                         @click="downloadDocumento(documento)"
                         class="indigo accent-4 white--text"
                       >
-                        <v-icon>mdi-file</v-icon>
+                      <v-icon color="red">mdi-file-pdf-box</v-icon>
                         <span>Descargar</span>
                       </v-btn>
                     </v-card-actions>
@@ -236,11 +236,11 @@ const info = L.control();
 // get color related in 100 percent
 function getColor(d) {
   return d > 100 ? '#800026' :
-    d > 50  ? '#BD0026' :
-    d > 20  ? '#E31A1C' :
-    d > 10  ? '#FC4E2A' :
-    d > 5   ? '#FD8D3C' :
-    d > 2   ? '#FEB24C' :
+    d > 81  ? '#BD0026' :
+    d > 65  ? '#E31A1C' :
+    d > 49  ? '#FC4E2A' :
+    d > 33   ? '#FD8D3C' :
+    d > 17   ? '#FEB24C' :
     d > 1   ? '#FED976' : '#FFEDA0';
 }
 
