@@ -18,52 +18,53 @@
           >
             <v-toolbar-title>{{ modulo }}</v-toolbar-title>
           </v-toolbar>
-          <div class="d-flex flex-row">
+          <div>
             <v-tabs
               v-model="tab"
-              direction="vertical"
+              direction="horizontal"
               color="green"
+              grow
             >
               <v-tab v-if="graficoHabilitado" value="option-1">
                 <v-icon start>
                   mdi-monitor-dashboard
                 </v-icon>
-                Gráficos
+                <div class="d-none d-sm-block">Gráficos</div>
               </v-tab>
               <v-tab v-if="mapaHabilitado" value="option-2">
                 <v-icon start>
                   mdi-map
                 </v-icon>
-                Mapas
+                <div class="d-none d-sm-block">Mapas</div>
               </v-tab>
               <v-tab v-if="documentoHabilitado" value="option-3">
                 <v-icon start>
                   mdi-file-star
                 </v-icon>
-                Investigaciones
+                <div class="d-none d-sm-block">Investigaciones</div>
               </v-tab>
               <v-tab v-if="descargaHabilitado" value="option-4">
                 <v-icon start>
                   mdi-download
                 </v-icon>
-                Descargar datos
+                <div class="d-none d-sm-block">Descargar datos</div>
               </v-tab>
               <v-tab value="option-5" @click="retornar()">
                 <v-icon start>
                   mdi-keyboard-return
                 </v-icon>
-                Otros módulos
+                <div class="d-none d-sm-block">Otros módulos</div>
               </v-tab>
             </v-tabs>
             <v-window v-model="tab" class="overflow-y-auto" style="height: 650px; width: 100%;">
               <v-window-item v-if="graficoHabilitado" value="option-1">
                 <v-row>
                   <v-card width="100%">
-                    <v-card-title>
+                    <v-card-text>
                       <v-spacer />
-                      <h4 class="text-center"> {{ titulo }} </h4>
+                      <h2 class="text-center"> {{ titulo }} </h2>
                       <v-spacer />
-                    </v-card-title>
+                    </v-card-text>
                   </v-card>
                 </v-row>
                 <v-row>
@@ -90,11 +91,11 @@
               <v-window-item value="option-2">
                 <v-row>
                   <v-card width="100%" v-if="graficoMapa?.habilitado">
-                    <v-card-title>
+                    <v-card-text>
                       <v-spacer />
-                      <h3 class="text-center"> {{ titulo }} </h3>
+                      <h2 class="text-center"> {{ titulo }} </h2>
                       <v-spacer />
-                    </v-card-title>
+                    </v-card-text>
                   </v-card>
                 </v-row>
                 <v-row>
@@ -117,9 +118,9 @@
               <v-window-item value="option-3">
                 <v-row>
                   <v-card width="100%">
-                    <v-card-title>
-                      <h4 class="text-center"> Documentos de investigacion </h4>
-                    </v-card-title>
+                    <v-card-text>
+                      <h2 class="text-center"> Documentos de investigacion </h2>
+                    </v-card-text>
                   </v-card>
                 </v-row>
                 <v-row>
@@ -151,9 +152,9 @@
               <v-window-item value="option-4">
                 <v-row>
                   <v-card width="100%">
-                    <v-card-title>
-                      <h4 class="text-center"> Seleccione la información que desea descargar </h4>
-                    </v-card-title>
+                    <v-card-text>
+                      <h2 class="text-center"> Seleccione la información que desea descargar</h2>
+                    </v-card-text>
                   </v-card>
                 </v-row>
                 <br><br>

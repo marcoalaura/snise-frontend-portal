@@ -61,23 +61,23 @@
     </v-dialog>
   </v-row>
   <v-row>
-    <v-col cols="3"></v-col>
-    <v-col cols="6">
-      <v-container class="mt-10">
-        <v-text-field 
-        v-model="searchVal" 
-        @keyup.enter="buscar"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined">
-          <template v-slot:label>
-            <span>
-              Buscar datos o investigaciones
-            </span>
-          </template>
-        </v-text-field>
+      <v-container class="mt-10 row justify-content-md-center">
+        <v-responsive
+        class="mx-auto"
+        max-width="600">
+          <v-text-field 
+          v-model="searchVal" 
+          @keyup.enter="buscar"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined">
+            <template v-slot:label>
+              <span>
+                Buscar datos o investigaciones
+              </span>
+            </template>
+          </v-text-field>
+        </v-responsive>
       </v-container>
-    </v-col>
-    <v-col cols="3"></v-col>
 </v-row>
   <v-container v-if="snackbar">
     <v-snackbar v-model="snackbar">

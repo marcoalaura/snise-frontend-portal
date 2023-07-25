@@ -48,9 +48,7 @@ export default {
             banner.urlRemoto = await this.getImage(banner.url);
           });
         });
-        console.log('========================> this.banners', this.banners);
       } catch (error) {
-        console.log('=======================> Error', error);
       };
     },
     async getImage(url) {
@@ -74,10 +72,6 @@ export default {
         }
         return null;
       } catch (error) {
-        console.log('========================> error', error);
-        this.snackbar = true;
-        this.textSnackbar = "Ocurrió un error, intente nuevamente.";
-        this.colorSnackbar = "red";
       }
     },
   },

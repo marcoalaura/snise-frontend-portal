@@ -6,10 +6,11 @@
         <!-- Logo -->
         <div class="logo" style="margin-right: 20%">
           <v-btn
-              class="btn px-6 bg-white ml-2 d-md-flex d-none"
+              class="btn px-6 bg-white ml-2"
               flat
+              @click="$router.push('/')"
             >
-            <img :src="urlLogoMinisterio" alt="Logo Ministerio" />
+            <img :src="urlLogoMinisterio" alt="Logo Yupana" />
           </v-btn>
         </div>
         <!-- Desktop view Navigation -->
@@ -40,7 +41,7 @@
             class="btn px-6 bg-white ml-2 d-md-flex d-none"
             flat
           >
-          <img :src="urlLogoObservatorio" alt="Logo Observaorio"/>
+          <img :src="urlLogoObservatorio" alt="Logo Observatorio"/>
           </v-btn>
           <v-app-bar-nav-icon
             width="30"
