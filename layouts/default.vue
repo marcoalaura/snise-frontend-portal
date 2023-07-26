@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const title = ref("SNISE");
+const title = ref("YUPANA");
 useHead({
   meta: [{ content: title }],
   titleTemplate: (titleChunk) => {
     return titleChunk
       ? `${titleChunk} - OBSCD`
-      : "SNISE";
+      : "YUPANA";
   },
 });
 </script>

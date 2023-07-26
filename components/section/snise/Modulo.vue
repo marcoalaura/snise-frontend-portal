@@ -22,7 +22,7 @@
             <v-tabs
               v-model="tab"
               direction="horizontal"
-              color="green"
+              color="blue"
               grow
             >
               <v-tab v-if="graficoHabilitado" value="option-1">

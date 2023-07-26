@@ -5,14 +5,13 @@
         <v-row justify="center">
           <v-col cols="12" sm="10" md="9" lg="7">
             <div class="text-center section-title font-weight-medium">
-              Seleccione el módulo que desea revisar
+              Seleccione un módulo para explorar
             </div>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" md="4" sm="6" v-for="modulo in modulos" :key="modulo.id">
             <v-card elevation="0" class="team-card mb-7" @click="seleccionar(modulo)">
-              <v-card-title>{{ modulo.nombre }}</v-card-title>
               <div class="social-overlay overflow-hidden">
                 <!-- <img :src="`/images/team/narcotrafico.jpg`" :alt="modulo.id" class="img-fluid"/> -->
                 <img :src="modulo.urlRemote" :alt="modulo.id" class="img-fluid" />

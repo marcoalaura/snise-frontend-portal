@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-app-bar app class="app-header position-relative bg-green header2" flat>
+    <v-app-bar app class="app-header position-relative bg-dark-blue header2" flat>
       <v-container class="py-0 fill-height">
         <v-toolbar>
         <!-- Logo -->
         <div class="logo" style="margin-right: 20%">
           <v-btn
-              class="btn px-6 bg-white ml-2"
+              class="btn px-6 ml-2"
               flat
               @click="$router.push('/')"
             >
@@ -38,7 +38,7 @@
           </div>
           <!-- login-regiter -->
           <v-btn
-            class="btn px-6 bg-white ml-2 d-md-flex d-none"
+            class="btn px-6 ml-2 d-md-flex d-none"
             flat
           >
           <img :src="urlLogoObservatorio" alt="Logo Observatorio"/>
