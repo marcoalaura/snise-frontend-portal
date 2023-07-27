@@ -63,7 +63,7 @@
   <v-row>
       <v-container class="mt-10 row justify-content-md-center">
         <v-responsive
-        class="mx-auto"
+        class="mx-auto pt-2"
         max-width="600">
           <v-text-field 
           v-model="searchVal" 

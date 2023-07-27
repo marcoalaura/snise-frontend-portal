@@ -158,23 +158,142 @@
                   </v-card>
                 </v-row>
                 <br><br>
-                <v-row justify="center">
-                  <v-card 
-                    width="80%" 
-                    v-for="(descarga, id) in descargas"
-                    v-bind:key="id"
-                    flat
-                  ><v-btn
-                      class="ma-2"
-                      color="green"
-                      icon="mdi-file-excel"
-                      @click="downloadDescarga(descarga)"
-                      outlined
-                      tile
-                    ></v-btn>
-                      {{ descarga.titulo }}
-                  </v-card>
+                <v-row >
+                    <v-expansion-panels 
+                    variant="accordion"
+                    v-model="panel">
+                      <v-expansion-panel>
+                        <v-expansion-panel-title>Descargar Datos</v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-card 
+                            width="80%" 
+                            v-for="(descarga, id) in descargas"
+                            v-bind:key="id"
+                            flat
+                          ><v-btn
+                              class="ma-2"
+                              color="green"
+                              icon="mdi-file-excel"
+                              @click="downloadDescarga(descarga)"
+                              outlined
+                              tile
+                            ></v-btn>
+                              {{ descarga.titulo }}
+                          </v-card>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+
+                      <v-expansion-panel>
+                        <v-expansion-panel-title>Consultar otros datos</v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-form ref="descargaForm">
+                            <v-card-text>
+                              <v-container>
+                                <v-row>
+                                  <p>Usted puede generar su propia descarga según sus necesidades. Para ello, debe realizar lo siguiente:</p>
+                                </v-row>
+                                <v-row>
+                                  <div class="ml-4">
+                                    <ul>
+                                      <li>Seleccionar un conjunto de datos.</li>
+                                      <li>Indicar la variable que irá como "columna".</li>
+                                      <li>Indicar la variable que irá como "fila".</li>
+                                      <li>Hacer clic en el botón "Generar Archivo".</li>
+                                    </ul>
+                                  </div>
+                                </v-row>
+                                <v-row>
+                                  <v-select
+                                    v-model="editedItem.idConfDataset"
+                                    label="Conjunto de datos"
+                                    :items="datasets"
+                                    item-value="id"
+                                    item-title="descripcion"
+                                    :rules="rules"
+                                    @update:modelValue="actualizarAtributos()"
+                                  ></v-select>
+                                  <v-select
+                                      v-model="editedItem.configuracion.valor"
+                                      label="Valor"
+                                      :items="datasets"
+                                      item-value="nombre_metrica"
+                                      item-text="nombre_metrica"
+                                      disabled
+                                      :rules="rules"
+                                      class="ml-2"
+                                    ></v-select>
+                                </v-row>
+                                <v-row>
+                                    <v-select
+                                      v-model="editedItem.configuracion.varx"
+                                      label="Columnas"
+                                      :items="atributos"
+                                      item-value="nombre"
+                                      item-title="nombre"
+                                      :rules="rules"
+                                    ></v-select>
+                                    <v-select
+                                      v-model="editedItem.configuracion.vary"
+                                      label="Filas"
+                                      :items="atributos"
+                                      item-value="nombre"
+                                      item-title="nombre"
+                                      :rules="rules"
+                                      class="ml-2"
+                                    ></v-select>                                  
+                                </v-row>
+                                <v-row>
+                                  <v-btn @click="downloadConsulta()" color="blue">
+                                    Generar Archivo
+                                  </v-btn>
+                                </v-row>
+                              </v-container>
+                            </v-card-text>
+                          </v-form>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+
+                      <v-expansion-panel>
+                        <v-expansion-panel-title>¿No encuentras lo que necesitas?</v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-form ref="solicitarForm">
+                            <v-card-text>
+                              <v-container>
+                                <v-row>
+                                  <p>Si no encontró la información que necesita, puede enviarnos un mensaje, le solicitamos que nos pueda proporcionar:</p>
+                                </v-row>
+                                <v-row>
+                                  <div class="ml-4">
+                                    <ul>
+                                      <li>Su nombre y apellido.</li>
+                                      <li>Un correo electrónico para que podamos responderle.</li>
+                                      <li>La solicitud de datos detallando los datos y variables, el periodo del que se requiere la información y la finalidad con la que se utilizará la información.</li>
+                                      <li>Hacer clic en el botón "Enviar solicitud".</li>
+                                    </ul>
+                                  </div>
+                                </v-row>
+                                <v-row>
+                                  <v-text-field label="Nombre" prepend-inner-icon="mdi-account"></v-text-field>
+                                </v-row>
+                                <v-row>
+                                  <v-text-field label="Correo electrónico" prepend-inner-icon="mdi-email"></v-text-field>
+                                </v-row>
+                                <v-row>
+                                  <v-textarea label="Solicitud de datos"></v-textarea>
+                                </v-row>
+                                <v-row>
+                                  <v-btn @click="enviarSolicitud" color="blue">
+                                    Enviar solicitud
+                                  </v-btn>
+                                </v-row>
+                              </v-container>
+                            </v-card-text>
+                          </v-form>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                 </v-row>
+
               </v-window-item>
             </v-window>
           </div>
@@ -299,7 +418,7 @@ export default {
       notaPie: null,
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         // pointBorderColor: "#2196F3",
         // pointBackgroundColor: "#2196F3",
         // backgroundColor: "#2196F3",
@@ -311,6 +430,25 @@ export default {
       deptosData,
       info,
       runtimeConfig: runtimeConfig,
+      
+      panel: [0],
+      rules: [(value) => !!value || "Requerido"],
+      datasets: [],
+      atributos: [],
+      editedIndex: -1,
+      editedItem: {
+        idModulo: null,
+        idConfDataset: null,
+        titulo: "",
+        restringido: false,
+        configuracion: {
+          tabla: null,
+          valor: null,
+          varx: null,
+          vary: null,
+        },
+        fileUrl: null,
+      },
     };
   },
   computed: {
@@ -348,6 +486,33 @@ export default {
       localStorage.setItem("fmodulo", this.modulo);
       this.initialize();
     },
+
+    async actualizarAtributos(){
+      try {
+
+        await this.limpiarConf();
+        // Variable y seleccionar
+        const datasetSeleccionado = this.datasets.find(dataset => dataset.id === this.editedItem.idConfDataset);
+        this.editedItem.configuracion.valor = datasetSeleccionado.metrica_nombre;
+        this.editedItem.configuracion.tabla = datasetSeleccionado.tabla;
+        console.log(this.editedItem.idConfDataset)
+
+        if (this.editedItem.idConfDataset){
+          const atributos = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/datasets/atributos/${this.editedItem.idConfDataset}`);
+          this.atributos = atributos.data ? atributos.data : [];
+          console.log(this.atributos)
+        }
+
+      } catch (error) {}
+    },
+
+    async limpiarConf() {
+      this.editedItem.configuracion.tabla = '';
+      this.editedItem.configuracion.valor = '';
+      this.editedItem.configuracion.varx = '';
+      this.editedItem.configuracion.vary = '';
+    },
+
     async initialize() {
       this.graficoLinea = null;
       this.graficoBarra = null;
@@ -443,6 +608,7 @@ export default {
           console.log('========================> e', e);
         }
 
+        // documentos
         try {
           let rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/documentos/${this.idModulo}`);
           if (rta.data?._rawValue) {
@@ -450,12 +616,23 @@ export default {
           }
         } catch (error) { }
 
+        // descargas datos
         try {
           let rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/descargas/${this.idModulo}`);
           if (rta.data?._rawValue) {
             this.descargas = rta.data?._rawValue;
           }
         } catch (error) { }
+
+        // crear descarga
+        try {
+          let rta = await useFetch(`${this.runtimeConfig?.public?.apiBase}publico/datasets/${this.idModulo}`);
+          if (rta.data?._rawValue) {
+            this.datasets = rta.data?._rawValue;
+            console.log(this.datasets)
+          }
+        } catch (error) { }
+        
       }
     },
     retornar() {
@@ -501,6 +678,43 @@ export default {
         this.textSnackbar = "Ocurrió un error, intente nuevamente.";
         this.colorSnackbar = "red";
       }
+    },
+
+    async downloadConsulta(){
+      
+      try {
+        console.log(this.editedItem)
+        let consulta = this.editedItem;
+        const settings = {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ consulta }),
+        };
+
+        console.log("descargar consulta....")
+        await fetch(`${this.runtimeConfig?.public?.apiBase}publico/archivo-consulta`, settings)
+          .then((response) => response.blob())
+          .then((responseBlob) => {
+          let fileURL = window.URL.createObjectURL(new Blob([responseBlob]));
+          let fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", "SUIN-descarga.xlsx");
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        });
+      } catch(error){
+        console.log("salio errror")
+        console.log(error)
+      }
+    },
+
+    async enviarSolicitud(){
+      try {
+
+      } catch(error){}
     },
   },
 };
