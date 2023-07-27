@@ -69,15 +69,15 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" :md="graficoLinea?.ancho">
-                    <h3 class="text-center"> {{ graficoLinea?.titulo }} </h3>
+                    <!-- <h3 class="text-center"> {{ graficoLinea?.titulo }} </h3> -->
                     <Line v-if="graficoLinea?.habilitado" :data="graficoLinea" :options="options" />
                   </v-col>   
                   <v-col v-if="graficoPie?.habilitado" cols="12" :md="graficoPie?.ancho">
-                    <h3 class="text-center"> {{ graficoPie?.titulo }} </h3>
+                    <!-- <h3 class="text-center"> {{ graficoPie?.titulo }} </h3> -->
                     <Pie :data="graficoPie" :options="options" />
                   </v-col>           
                   <v-col v-if="graficoBarra?.habilitado" cols="12" :md="graficoBarra?.ancho">
-                    <h3 class="text-center"> {{ graficoBarra?.titulo }} </h3>
+                    <!-- <h3 class="text-center"> {{ graficoBarra?.titulo }} </h3> -->
                     <Bar :data="graficoBarra" :options="options" />
                   </v-col>
                 </v-row>
