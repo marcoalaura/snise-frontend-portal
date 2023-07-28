@@ -68,17 +68,14 @@
                   </v-card>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" :md="graficoLinea?.ancho">
-                    <!-- <h3 class="text-center"> {{ graficoLinea?.titulo }} </h3> -->
-                    <Line v-if="graficoLinea?.habilitado" :data="graficoLinea" :options="options" />
+                  <v-col v-if="graficoLinea?.habilitado" cols="12" :md="graficoLinea?.ancho">
+                    <Line :data="graficoLinea" :options="optionsLinea" />
                   </v-col>   
                   <v-col v-if="graficoPie?.habilitado" cols="12" :md="graficoPie?.ancho">
-                    <!-- <h3 class="text-center"> {{ graficoPie?.titulo }} </h3> -->
-                    <Pie :data="graficoPie" :options="options" />
+                    <Pie :data="graficoPie" :options="optionsPie" />
                   </v-col>           
                   <v-col v-if="graficoBarra?.habilitado" cols="12" :md="graficoBarra?.ancho">
-                    <!-- <h3 class="text-center"> {{ graficoBarra?.titulo }} </h3> -->
-                    <Bar :data="graficoBarra" :options="options" />
+                    <Bar :data="graficoBarra" :options="optionsBarra" />
                   </v-col>
                 </v-row>
                 <v-row>
@@ -420,13 +417,9 @@ export default {
       graficoMapa: null,
       titulo: null,
       notaPie: null,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        // pointBorderColor: "#2196F3",
-        // pointBackgroundColor: "#2196F3",
-        // backgroundColor: "#2196F3",
-      },
+      optionsLinea: null,
+      optionsBarra: null,
+      optionsPie: null,
       snackbar: false,
       textSnackbar: "",
       colorSnackbar: "",
@@ -523,6 +516,9 @@ export default {
       this.graficoPie = null;
       this.titulo = null;
       this.notaPie = null;
+      this.optionsLinea = null;
+      this.optionsBarra = null;
+      this.optionsPie = null;
 
       this.idModulo = localStorage.getItem("fidmodulo");
       this.modulo = localStorage.getItem("fmodulo");
@@ -537,12 +533,42 @@ export default {
       
             // grafico de serie temporal
             this.graficoLinea = rta.data?._rawValue?.linea;
+            this.optionsLinea = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: this.graficoLinea?.titulo,
+                }
+              }
+            };
       
             // grafico de barras
             this.graficoBarra = rta.data?._rawValue?.barra;
+            this.optionsBarra = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: this.graficoBarra?.titulo,
+                }
+              }
+            };
       
             // grafico los pies
             this.graficoPie = rta.data?._rawValue?.pie;
+            this.optionsPie = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: this.graficoPie?.titulo,
+                }
+              }
+            };
           }
         } catch (error) { };
 
